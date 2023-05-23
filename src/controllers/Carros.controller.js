@@ -1,5 +1,4 @@
-import {promises as fs} from "fs"
-const { readFile, writeFile } = fs;
+import CarrosRepository from "../repositories/Carros.repository.js";
 
 class CarrosController {
   
@@ -12,25 +11,52 @@ class CarrosController {
     }
   }
 
-  async marcaPorQuantidadeModelos(req, res) {
+  async marcasComMaisModelos(_, res) {
     try {
-        const ordem = req.query.ordem
-        const data = JSON.parse(await readFile(global.fileName));
-
-        const marca = data.map(({brand, models}) => {
-            return {
-                'marca': brand,
-                'quantidade': models.length
-            }
-        }).sort((a,b) => {
-            return (ordem === 'menor') ? a.quantidade - b.quantidade : b.quantidade - a.quantidade;
-        })[0]
-
-        return res.send(marca)
+        const marca = await CarrosRepository.quantidadeModelosMarcas('desc');
+        return res.send(marca);
     } catch (error) {
         return res.status(500).json(error.message);
     }
   }
+  
+  async marcasComMenosModelos(_, res) {
+    try {
+        const marca = await CarrosRepository.quantidadeModelosMarcas()
+        return res.send(marca);
+    } catch (error) {
+        return res.status(500).json(error.message);
+    }
+  }
+  async listaMaisModelos(req, res) {
+    try {
+        const { qtd } = req.params
+        const lista = await CarrosRepository.quantidadeModelosMarcas('desc', qtd)
+        return res.send(lista);
+    } catch (error) {
+        return res.status(500).json(error.message);
+    }
+  }
+
+  async listaMenosModelos(req, res) {
+    try {
+        const { qtd } = req.params
+        const lista = await CarrosRepository.quantidadeModelosMarcas('asc', qtd)
+        return res.send(lista);
+    } catch (error) {
+        return res.status(500).json(error.message);
+    }
+  }
+  async modelosPorMarca(req, res) {
+    try {
+        const { marca } = req.params
+        const modelos = await CarrosRepository.modelosPorMarca(marca.toLowerCase())
+        return res.send(modelos);
+    } catch (error) {
+        return res.status(500).json(error.message);
+    }
+  }
+
 }
 
 export default new CarrosController();

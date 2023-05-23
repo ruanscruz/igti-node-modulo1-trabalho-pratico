@@ -9,7 +9,11 @@ class CarrosRouter {
 
     routes() {
         this.router.get('/', CarrosController.veiculos);
-        this.router.get('/marcaPorQuantidadeModelos', CarrosController.marcaPorQuantidadeModelos);
+        this.router.get('/marcas/maisModelos', CarrosController.marcasComMaisModelos);
+        this.router.get('/marcas/menosModelos', CarrosController.marcasComMenosModelos);
+        this.router.get('/marcas/listaMaisModelos/:qtd', CarrosController.listaMaisModelos);
+        this.router.get('/marcas/listaMenosModelos/:qtd', CarrosController.listaMenosModelos);
+        this.router.get('/marcas/listaModelos/:marca', CarrosController.modelosPorMarca);
     }
 }
 
